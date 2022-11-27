@@ -1,6 +1,6 @@
 import './bootstrap';
-
-import {render}  from 'react-dom';
 import PostsIndex from "./Pages/Posts";
-
-render(<PostsIndex/>,document.getElementById("app"));
+import {createRoot} from "react-dom/client";
+const container = document.getElementById("app");
+const root = createRoot(container)
+root.render(<PostsIndex/>);
