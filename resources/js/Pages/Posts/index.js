@@ -7,12 +7,16 @@ function PostsIndex(){
     const [query,setQuery] = useState( {
             page: 1,
     })
+
+    useEffect(() => {
+        fetchPosts();
+    },[query])
+
     useEffect(() => {
         fetchPosts();
     },[]);
 
     const fetchPosts = (page=1) => {
-        query.page = page;
         axios.get('/api/posts',{params: query})
             .then(res => {
                 setPosts(res.data.data);
@@ -26,19 +30,18 @@ function PostsIndex(){
     const pageChanged =  (url) => {
         const fullUrl = new URL(url);
         const currentPage = fullUrl.searchParams.get('page');
-        console.log('currentPage',currentPage);
         setQuery({
                 page: currentPage
         })
-        fetchPosts(currentPage);
+        console.log('query',query);
     }
 
 
     const  renderPaginatorLinks = () =>  {
         return PostsMeta?.meta?.links.map((link, index) =>
-            <button key={index} onClick={() => pageChanged(link.url)}
+             <button key={index} onClick={() => pageChanged(link.url)}
                     dangerouslySetInnerHTML={{__html: link.label}}
-                    className="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md"/>
+                    className={`${(link.active) && ' border-indigo-500 bg-indigo-50 text-indigo-500'} relative z-10 inline-flex items-center border px-4 py-2 text-sm font-medium text-black-600 focus:z-20`}/>
         );
     }
 
@@ -78,6 +81,7 @@ function PostsIndex(){
                 <th>ID</th>
                 <th>Title</th>
                 <th>Content</th>
+                <th>Category</th>
                 <th>Created At</th>
             </tr>
             </thead>
@@ -87,6 +91,7 @@ function PostsIndex(){
                     <td>{post?.id}</td>
                     <td className={'font-bold'}>{post?.title}</td>
                     <td>{post?.content}</td>
+                    <td><span  className="inline-block py-1 px-2 leading-none text-center whitespace-nowrap align-baseline  bg-blue-600 text-white rounded">{post?.category?.name}</span></td>
                     <td>{post?.created_at}</td>
                 </tr>)
             })}

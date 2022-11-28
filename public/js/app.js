@@ -42,10 +42,12 @@ function PostsIndex() {
     setQuery = _useState6[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchPosts();
+  }, [query]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    fetchPosts();
   }, []);
   var fetchPosts = function fetchPosts() {
     var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    query.page = page;
     axios.get('/api/posts', {
       params: query
     }).then(function (res) {
@@ -62,11 +64,10 @@ function PostsIndex() {
   var pageChanged = function pageChanged(url) {
     var fullUrl = new URL(url);
     var currentPage = fullUrl.searchParams.get('page');
-    console.log('currentPage', currentPage);
     setQuery({
       page: currentPage
     });
-    fetchPosts(currentPage);
+    console.log('query', query);
   };
   var renderPaginatorLinks = function renderPaginatorLinks() {
     var _PostsMeta$meta;
@@ -78,7 +79,7 @@ function PostsIndex() {
         dangerouslySetInnerHTML: {
           __html: link.label
         },
-        className: "relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150 first:rounded-l-md last:rounded-r-md"
+        className: "".concat(link.active && ' border-indigo-500 bg-indigo-50 text-indigo-500', " relative z-10 inline-flex items-center border px-4 py-2 text-sm font-medium text-black-600 focus:z-20")
       }, index);
     });
   };
@@ -128,11 +129,14 @@ function PostsIndex() {
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
             children: "Content"
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
+            children: "Category"
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
             children: "Created At"
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("tbody", {
         children: Posts.map(function (post) {
+          var _post$category;
           return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("tr", {
             children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("td", {
               children: post === null || post === void 0 ? void 0 : post.id
@@ -141,6 +145,11 @@ function PostsIndex() {
               children: post === null || post === void 0 ? void 0 : post.title
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("td", {
               children: post === null || post === void 0 ? void 0 : post.content
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("td", {
+              children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
+                className: "inline-block py-1 px-2 leading-none text-center whitespace-nowrap align-baseline  bg-blue-600 text-white rounded",
+                children: post === null || post === void 0 ? void 0 : (_post$category = post.category) === null || _post$category === void 0 ? void 0 : _post$category.name
+              })
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("td", {
               children: post === null || post === void 0 ? void 0 : post.created_at
             })]
