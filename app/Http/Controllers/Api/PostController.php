@@ -14,9 +14,17 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return  PostResource::collection(Post::with('category')->paginate(10));
+        $orderBy = $request->input('order_by') ?? 'id';
+        $orderDirection = $request->input('order_by_dir') ??  'desc';
+        $posts = Post::with('category')
+            ->when($request->filled('category_id'), function($query) use($request){
+                $query->where('category_id',$request->category_id);
+            })
+            ->orderBy($orderBy,$orderDirection)
+            ->paginate(10);
+        return  PostResource::collection($posts);
     }
 
     /**

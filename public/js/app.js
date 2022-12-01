@@ -15,6 +15,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -30,22 +33,39 @@ function PostsIndex() {
     _useState2 = _slicedToArray(_useState, 2),
     Posts = _useState2[0],
     setPosts = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState4 = _slicedToArray(_useState3, 2),
-    PostsMeta = _useState4[0],
-    setPostsMeta = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-      page: 1
-    }),
+    Categories = _useState4[0],
+    setCategories = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
     _useState6 = _slicedToArray(_useState5, 2),
-    query = _useState6[0],
-    setQuery = _useState6[1];
+    PostsMeta = _useState6[0],
+    setPostsMeta = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      page: 1,
+      category_id: '',
+      order_by: 'id',
+      order_by_dir: 'asc'
+    }),
+    _useState8 = _slicedToArray(_useState7, 2),
+    query = _useState8[0],
+    setQuery = _useState8[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchPosts();
   }, [query]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     fetchPosts();
+    fetchCategories();
   }, []);
+  var updateOrder = function updateOrder(columnName) {
+    setQuery(function (prevQuery) {
+      return _objectSpread(_objectSpread({}, prevQuery), {}, {
+        page: 1,
+        order_by: columnName,
+        order_by_dir: prevQuery.order_by_dir === 'asc' ? 'desc' : 'asc'
+      });
+    });
+  };
   var fetchPosts = function fetchPosts() {
     var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     axios.get('/api/posts', {
@@ -61,6 +81,25 @@ function PostsIndex() {
       console.log(e);
     });
   };
+  var fetchCategories = function fetchCategories() {
+    var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    axios.get('/api/categories', {
+      params: query
+    }).then(function (res) {
+      setCategories(res.data.data);
+    })["catch"](function (e) {
+      console.log(e);
+    });
+  };
+  var handleCategoryChanged = function handleCategoryChanged(event) {
+    setQuery(function (prevQuery) {
+      return _objectSpread(_objectSpread({}, prevQuery), {}, {
+        page: 1,
+        category_id: event.target.value
+      });
+    });
+    console.log(event.target.value);
+  };
   var pageChanged = function pageChanged(url) {
     var fullUrl = new URL(url);
     var currentPage = fullUrl.searchParams.get('page');
@@ -68,6 +107,19 @@ function PostsIndex() {
       page: currentPage
     });
     console.log('query', query);
+  };
+  var orderColumnIcon = function orderColumnIcon(columnName) {
+    var icon = 'fa-sort';
+    if ((query === null || query === void 0 ? void 0 : query.order_by) == columnName) {
+      if ((query === null || query === void 0 ? void 0 : query.order_by_dir) == 'asc') {
+        icon = 'fa-sort-up';
+      } else {
+        icon = 'fa-sort-down';
+      }
+    }
+    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("i", {
+      className: "fa-solid  ".concat(icon)
+    });
   };
   var renderPaginatorLinks = function renderPaginatorLinks() {
     var _PostsMeta$meta;
@@ -117,21 +169,85 @@ function PostsIndex() {
     });
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.Fragment, {
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("table", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+      className: "grid grid-cols-4 gap-4",
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
+        className: "mb-4",
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("label", {
+          htmlFor: "categories",
+          className: "block mb-2 text-sm font-medium text-gray-900 dark:text-white",
+          children: "Select an category"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("select", {
+          onChange: handleCategoryChanged,
+          name: "category_id",
+          id: "categories",
+          className: "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
+            value: "",
+            children: "-- all categories --"
+          }), Categories.map(function (category) {
+            return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("option", {
+              value: category === null || category === void 0 ? void 0 : category.id,
+              children: category.name
+            }, category === null || category === void 0 ? void 0 : category.id);
+          })]
+        })]
+      })
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("table", {
       className: "table-auto",
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("thead", {
         className: 'table-header',
         children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("tr", {
-          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
-            children: "ID"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
-            children: "Title"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
-            children: "Content"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
-            children: "Category"
-          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("th", {
-            children: "Created At"
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("th", {
+            className: 'table-cell',
+            children: ["ID ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              onClick: function onClick() {
+                return updateOrder('id');
+              },
+              type: "button",
+              className: "column-sort ml-2 ",
+              children: orderColumnIcon('id')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("th", {
+            className: 'table-cell',
+            children: ["Title ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              onClick: function onClick() {
+                return updateOrder('title');
+              },
+              type: "button",
+              className: "column-sort ml-2",
+              children: orderColumnIcon('title')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("th", {
+            className: 'table-cell',
+            children: ["Content ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              onClick: function onClick() {
+                return updateOrder('content');
+              },
+              type: "button",
+              className: "column-sort ml-2",
+              children: orderColumnIcon('content')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("th", {
+            className: 'table-cell',
+            children: ["Category ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              onClick: function onClick() {
+                return updateOrder('category_id');
+              },
+              type: "button",
+              className: "column-sort ml-2",
+              children: orderColumnIcon('category_id')
+            })]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("th", {
+            className: 'table-cell',
+            children: ["Created At ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("button", {
+              onClick: function onClick() {
+                return updateOrder('created_at');
+              },
+              type: "button",
+              className: "column-sort ml-2",
+              children: orderColumnIcon('created_at')
+            })]
           })]
         })
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("tbody", {
