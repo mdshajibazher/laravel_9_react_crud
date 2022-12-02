@@ -759,9 +759,6 @@ video {
 }.py-12 {
   padding-top: 3rem;
   padding-bottom: 3rem;
-}.py-6 {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
 }.py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -771,6 +768,9 @@ video {
 }.py-1 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+}.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }.pt-1 {
   padding-top: 0.25rem;
 }.pt-8 {

@@ -20,4 +20,3 @@ Route::view('/', 'layouts.app');
 Route::view('/{any?}', 'layouts.app')->where('any', '.*');
 
 
-require __DIR__.'/auth.php';
