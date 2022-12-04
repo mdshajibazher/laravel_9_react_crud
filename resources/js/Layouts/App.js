@@ -1,6 +1,7 @@
 import {BrowserRouter, Route, Routes,NavLink} from "react-router-dom";
 import PostsIndex from "../Pages/Posts";
 import PostCreate from "../Pages/Posts/Create";
+import {ToastContainer} from "react-toastify";
 function App(){
     return (
         <BrowserRouter>
@@ -49,6 +50,8 @@ function App(){
                         </div>
                     </div>
                 </main>
+                <ToastContainer />
+
             </div>
         </BrowserRouter>
     );
